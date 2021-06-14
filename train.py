@@ -4,6 +4,7 @@ import sys
 curr_dir = os.getcwd()
 sys.path.append(curr_dir)
 
+import torch
 import torch.nn as nn
 import torch.optim as optim
 
@@ -26,4 +27,7 @@ if __name__ == '__main__':
     optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
 
     train = task.train_network(2, train_loader, valid_loader, net, criterion, optimizer, log_freq=20)
+    state_dict = net.state_dict()
+    fpath = '/kaggle/working/mynetwork_state_dict.pth'
+    torch.save(state_dict, fpath)
     
