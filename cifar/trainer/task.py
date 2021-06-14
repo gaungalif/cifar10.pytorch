@@ -1,7 +1,7 @@
 import os
 
 import torch
-from tqdm import tqdm 
+from tqdm.notebook import tqdm 
 
 os.environ['CUDA_LAUNCH_BLOCKING'] = '1'
 
