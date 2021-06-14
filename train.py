@@ -25,7 +25,7 @@ net = MyNetwork(ichan=3, clazz=clazz, imsize=(64,64)).to(task.device)
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
 if __name__ == '__main__':
-    train = task.train_network(2, train_loader, valid_loader, net, criterion, optimizer, log_freq=20)
+    train = task.train_network(10, train_loader, valid_loader, net, criterion, optimizer, log_freq=100)
 
 state_dict = net.state_dict()
 fpath = Path(curr_dir).joinpath('mynetwork_state_dict.pth')
