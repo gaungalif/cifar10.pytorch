@@ -28,6 +28,6 @@ if __name__ == '__main__':
 
     train = task.train_network(2, train_loader, valid_loader, net, criterion, optimizer, log_freq=20)
     state_dict = net.state_dict()
-    fpath = '/kaggle/working/mynetwork_state_dict.pth'
+    fpath = Path(curr_dir).joinpath('mynetwork_state_dict.pth')
     torch.save(state_dict, fpath)
     
