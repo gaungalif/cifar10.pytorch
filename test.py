@@ -20,5 +20,13 @@ out = net(imgs)
 out = torch.softmax(out, dim=0)
 out = torch.argmax(out, dim=1)
 # torch.argmax(out[0])
+true = 0
+false = 0
 for idx in range(len(out)):
     print(out[idx]==lbls[idx])
+    if(out[idx]==lbls[idx]):
+        true+=1
+    else:
+        false+=1
+print('true = {}'.format(true))
+print('false = {}'.format(false))
