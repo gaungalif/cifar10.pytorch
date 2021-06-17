@@ -5,16 +5,12 @@ curr_dir = os.getcwd()
 sys.path.append(curr_dir)
 
 from cifar.models.models import MyNetwork
+
 import train
 import torch
 
-from pathlib import Path
-
-
-
-
 net = MyNetwork(ichan=3, clazz=10, imsize=(64,64))
-loaded_state_dict = torch.load(Path(curr_dir).joinpath('gaung.pth'), map_location='cpu')
+loaded_state_dict = torch.load(train.curr_dir.joinpath('gaung.pth'), map_location='cpu')
 net.load_state_dict(loaded_state_dict)
 
 idx = 0

@@ -16,6 +16,12 @@ from cifar.datasets import loader
 from cifar.models.models import MyNetwork
 from cifar.trainer import task
 
+curr_dir = Path(curr_dir)
+base_dir = curr_dir.joinpath('dataset')
+train_loader, trainset = loader.train_loader(base_dir)
+valid_loader, validset = loader.valid_loader(base_dir)
+fpath = curr_dir.joinpath('gaung.pth')
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('-lr','--lrate', type=float, help='learning rate', required=True)
@@ -30,11 +36,7 @@ if __name__ == "__main__":
     MOMENTUM = args.momentum
 
 
-    curr_dir = Path(curr_dir)
-    base_dir = curr_dir.joinpath('dataset')
-    train_loader, trainset = loader.train_loader(base_dir)
-    valid_loader, validset = loader.valid_loader(base_dir)
-    fpath = curr_dir.joinpath('gaung.pth')
+
 
     net = MyNetwork(ichan=3, clazz=10, imsize=(64,64)).to(task.device)
     criterion = nn.CrossEntropyLoss()
