@@ -6,16 +6,33 @@ sys.path.append(curr_dir)
 
 from cifar.models.models import MyNetwork
 
-import train
+from pathlib import Path
+import argparse
+
+from cifar.datasets import loader
+from cifar.models.models import MyNetwork
+
 import torch
 
+parser = argparse.ArgumentParser()
+parser.add_argument('-sp','--save_path',type=str, help='save path', required=True)
+args = parser.parse_args()
+
+save_path = args.save_path
+
+curr_dir = Path(curr_dir)
+base_dir = curr_dir.joinpath('dataset')
+train_loader, trainset = loader.train_loader(base_dir)
+valid_loader, validset = loader.valid_loader(base_dir)
+fpath = curr_dir.joinpath(save_path)
+
 net = MyNetwork(ichan=3, clazz=10, imsize=(64,64))
-loaded_state_dict = torch.load(train.curr_dir.joinpath('gaung.pth'), map_location='cpu')
+loaded_state_dict = torch.load(fpath, map_location='cpu')
 net.load_state_dict(loaded_state_dict)
 
 idx = 0
 
-imgs, lbls = next(iter(train.valid_loader))
+imgs, lbls = next(iter(valid_loader))
 out = net(imgs)
 out = torch.softmax(out, dim=0)
 out = torch.argmax(out, dim=1)
