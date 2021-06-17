@@ -22,7 +22,6 @@ if __name__ == "__main__":
     parser.add_argument('-ep','--epoch',type=int, help='epoch', required=True)
     parser.add_argument('-lf','--lfreq',type=int, help='log frequency')
     parser.add_argument('-m','--momentum',type=float, help='momentum', required=True)
-    parser.add_argument('-fp','--fpath',type=str, help='fpath',required=True)
     args = parser.parse_args()
     
     LR = args.lrate
@@ -30,13 +29,12 @@ if __name__ == "__main__":
     LOG_FREQ = args.lfreq
     MOMENTUM = args.momentum
 
-    FPATH = args.fpath
 
     curr_dir = Path(curr_dir)
     base_dir = curr_dir.joinpath('dataset')
     train_loader, trainset = loader.train_loader(base_dir)
     valid_loader, validset = loader.valid_loader(base_dir)
-    fpath = curr_dir.joinpath(FPATH)
+    fpath = curr_dir.joinpath('gaung.pth')
 
     net = MyNetwork(ichan=3, clazz=10, imsize=(64,64)).to(task.device)
     criterion = nn.CrossEntropyLoss()
