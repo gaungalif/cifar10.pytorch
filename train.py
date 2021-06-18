@@ -27,7 +27,6 @@ if __name__ == "__main__":
     parser.add_argument('-m','--momentum',type=float, help='momentum', default=0.9)
     parser.add_argument('-b','--bsize',type=int, help='batch size', default=32)
     parser.add_argument('-n','--num_worker',type=int, help='num worker', default=8)
-    parser.add_argument('-sp','--save_path',type=str, help='save path', required=True)
     parser.add_argument('-o','--optimizer',type=str, help='optimizer', required=True)
     args = parser.parse_args()
     
@@ -40,7 +39,6 @@ if __name__ == "__main__":
     
     BSIZE = args.bsize
     NUM_WORKER = args.num_worker
-    save_path = args.save_path
     
     net = MyNetwork(ichan=3, clazz=10, imsize=(64,64)).to(task.device)
 
@@ -51,6 +49,7 @@ if __name__ == "__main__":
         OPTIMIZER = optim.Adam(net.parameters(), LR)
     else:
         print("error cuy")
+    save_path = 'l{}_e{}_b{}_{}'.format(LR,EPOCHS,BSIZE,args.optimizer)
 
     curr_dir = Path(curr_dir)
     base_dir = curr_dir.joinpath('dataset')
