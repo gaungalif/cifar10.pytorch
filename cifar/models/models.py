@@ -74,8 +74,8 @@ class MyNetwork(nn.Module):
         '''
         super(MyNetwork, self).__init__()
         self.imsize = imsize
-        self.layer1 = SingleConvLayer(ichan=ichan, ochan=64)
-        self.layer2 = SingleConvLayer(ichan=64, ochan=64)
+        self.layer1 = DoubleConvLayer(ichan=ichan,hchan =64, ochan=64)
+        self.layer2 = DoubleConvLayer(ichan=64,hchan=64,ochan=128)
         flatval = self._flatval(imsize)
         self.fc1 = nn.Linear(flatval, 512)
         self.fc2 = nn.Linear(512, clazz)
@@ -83,14 +83,14 @@ class MyNetwork(nn.Module):
     
     def _last_res(self, x):
         import math
-        last = (x-6)/4
+        last = (x-12)/4
         last = math.floor(last)
         return last
     
     def _flatval(self, imsize):
         h,w = imsize
         hl,wl = self._last_res(h), self._last_res(w)
-        flat = 64*hl*wl
+        flat = 128*hl*wl
         return flat
     
     def forward(self, x):
