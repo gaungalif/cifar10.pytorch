@@ -1,11 +1,14 @@
 import os
-import shutil
 import time
-import warnings
+from typing import Tuple
 
 import torch
+from torch.functional import Tensor
 import torch.optim
 from tqdm.notebook import tqdm 
+from cifar.metrics.metrics import *
+from progress import ProgressMeter 
+
 
 os.environ['CUDA_LAUNCH_BLOCKING'] = '1'
 
@@ -36,7 +39,7 @@ def train_batch(epoch, dataloader, net, criterion, optimizer, log_freq=2000):
         output = net(inputs)
         loss = criterion(output,labels)
 
-        acc1, acc5 = accuracy(output,labels, topk=(1,5))
+        acc1, acc5 = AccuracyTopK(topk=(1,5))(output=output, target=labels)
         losses.update(loss.item(), inputs.size(0))
         top1.update(acc1[0], inputs.size(0))
         top5.update(acc5[0], inputs.size(0))
@@ -56,7 +59,7 @@ def train_batch(epoch, dataloader, net, criterion, optimizer, log_freq=2000):
             
     return top1.avg
             
-def valid_batch(epoch, dataloader, net, criterion, optimizer, log_freq=2000):
+def valid_batch(dataloader, net, criterion, log_freq=2000):
     batch_time = AverageMeter('Time', ':6.3f')
     losses = AverageMeter('Loss', ':.4e')
     top1 = AverageMeter('Acc@1', ':6.2f')
@@ -77,7 +80,7 @@ def valid_batch(epoch, dataloader, net, criterion, optimizer, log_freq=2000):
             output = net(inputs)
             loss = criterion(output,labels)
             
-            acc1, acc5 = accuracy(output,labels, topk=(1,5))
+            acc1, acc5 = AccuracyTopK(topk=(1,5))(output=output, target=labels)
             losses.update(loss.item(), inputs.size(0))
             top1.update(acc1[0], inputs.size(0))
             top5.update(acc5[0], inputs.size(0))
@@ -98,79 +101,14 @@ def train_network(epoch, tloader, vloader, net, criterion, optimizer, log_freq=2
     global best_acc1
     for ep in tqdm(range(epoch)):
         train_batch(ep, tloader, net, criterion, optimizer, log_freq=log_freq)
-        valid_batch(ep, vloader, net, criterion, optimizer, log_freq=log_freq)
+        valid_batch(vloader, net, criterion,  log_freq=log_freq)
         
-        acc1 = valid_batch(ep, vloader, net, criterion, optimizer, log_freq=log_freq)
+        acc1 = valid_batch(vloader, net, optimizer, log_freq=log_freq)
         is_best = acc1 > best_acc1
         best_acc1 = max(acc1, best_acc1)
-        save_checkpoint({
+        SaveCheckpoint(filename='checkpoint.pth.tar')({
                 'epoch': epoch + 1,
                 'state_dict': net.state_dict(),
                 'best_acc1': best_acc1,
                 'optimizer' : optimizer.state_dict(),
             }, is_best)
-
-class AverageMeter(object):
-    """Computes and stores the average and current value"""
-    def __init__(self, name, fmt=':f'):
-        self.name = name
-        self.fmt = fmt
-        self.reset()
-
-    def reset(self):
-        self.val = 0
-        self.avg = 0
-        self.sum = 0
-        self.count = 0
-
-    def update(self, val, n=1):
-        self.val = val
-        self.sum += val * n
-        self.count += n
-        self.avg = self.sum / self.count
-
-    def __str__(self):
-        fmtstr = '{name} {val' + self.fmt + '} ({avg' + self.fmt + '})'
-        return fmtstr.format(**self.__dict__)
-
-
-class ProgressMeter(object):
-    def __init__(self, num_batches, meters, prefix=""):
-        self.batch_fmtstr = self._get_batch_fmtstr(num_batches)
-        self.meters = meters
-        self.prefix = prefix
-
-    def display(self, batch):
-        entries = [self.prefix + self.batch_fmtstr.format(batch)]
-        entries += [str(meter) for meter in self.meters]
-        print('\n'.join(entries))
-        print('\n')
-
-    def _get_batch_fmtstr(self, num_batches):
-        num_digits = len(str(num_batches // 1))
-        fmt = '{:' + str(num_digits) + 'd}'
-        return '[' + fmt + '/' + fmt.format(num_batches) + ']'
-
-def accuracy(output, target, topk=(1,)):
-    """Computes the accuracy over the k top predictions for the specified values of k"""
-    with torch.no_grad():
-        maxk = max(topk)
-        batch_size = target.size(0)
-
-        _, pred = output.topk(maxk, 1, True, True)
-        pred = pred.t()
-        correct = pred.eq(target.view(1, -1).expand_as(pred))
-
-        res = []
-        for k in topk:
-            correct_k = correct[:k].reshape(-1).float().sum(0, keepdim=True)
-            res.append(correct_k.mul_(100.0 / batch_size))
-        return res
-
-def save_checkpoint(state, is_best, filename='checkpoint.pth.tar'):
-    torch.save(state, filename)
-    if is_best:
-        shutil.copyfile(filename, 'model_best.pth.tar')
-
-
-
