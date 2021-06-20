@@ -103,7 +103,7 @@ def train_network(epoch, tloader, vloader, net, criterion, optimizer, log_freq=2
         train_batch(ep, tloader, net, criterion, optimizer, log_freq=log_freq)
         valid_batch(vloader, net, criterion,  log_freq=log_freq)
         
-        acc1 = valid_batch(vloader, net, optimizer, log_freq=log_freq)
+        acc1 = valid_batch(vloader, net, criterion, log_freq=log_freq)
         is_best = acc1 > best_acc1
         best_acc1 = max(acc1, best_acc1)
         SaveCheckpoint(filename='checkpoint.pth.tar')({
