@@ -94,8 +94,11 @@ def valid_batch(epoch, dataloader, net, criterion, optimizer, log_freq=2000):
 
 
 def train_network(epoch, tloader, vloader, net, criterion, optimizer, log_freq=2000):
+    global best_acc1
     for ep in tqdm(range(epoch)):
         train_batch(ep, tloader, net, criterion, optimizer, log_freq=log_freq)
+        valid_batch(ep, vloader, net, criterion, optimizer, log_freq=log_freq)
+        
         acc1 = valid_batch(ep, vloader, net, criterion, optimizer, log_freq=log_freq)
         is_best = acc1 > best_acc1
         best_acc1 = max(acc1, best_acc1)
