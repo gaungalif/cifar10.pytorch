@@ -54,7 +54,7 @@ def train_batch(epoch, dataloader, net, criterion, optimizer, log_freq=2000):
 
     
             
-    return net, top1.avg
+    return top1.avg
             
 def valid_batch(epoch, dataloader, net, criterion, optimizer, log_freq=2000):
     batch_time = AverageMeter('Time', ':6.3f')
@@ -67,8 +67,7 @@ def valid_batch(epoch, dataloader, net, criterion, optimizer, log_freq=2000):
         prefix='Test: ')
 
     net.eval()
-    
-    running_loss = 0.0
+  
     with torch.no_grad():
         end = time.time()
         for i, data in tqdm(enumerate(dataloader, 0)):
@@ -92,7 +91,7 @@ def valid_batch(epoch, dataloader, net, criterion, optimizer, log_freq=2000):
         print(' * Acc@1 {top1.avg:.3f} Acc@5 {top5.avg:.3f}'
             .format(top1=top1, top5=top5))
 
-    return net, top1.avg
+    return top1.avg
 
 
 def train_network(epoch, tloader, vloader, net, criterion, optimizer, log_freq=2000):
