@@ -19,6 +19,7 @@ from cifar.trainer import task
 
 
 
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('-lr','--lrate', type=float, help='learning rate', required=True)
