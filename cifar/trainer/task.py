@@ -4,6 +4,7 @@ import time
 import warnings
 
 import torch
+import torch.optim
 from tqdm.notebook import tqdm 
 
 os.environ['CUDA_LAUNCH_BLOCKING'] = '1'
@@ -42,7 +43,7 @@ class ProgressMeter(object):
     def display(self, batch):
         entries = [self.prefix + self.batch_fmtstr.format(batch)]
         entries += [str(meter) for meter in self.meters]
-        print('\t'.join(entries))
+        print('\n'.join(entries))
 
     def _get_batch_fmtstr(self, num_batches):
         num_digits = len(str(num_batches // 1))
@@ -64,6 +65,11 @@ def accuracy(output, target, topk=(1,)):
             correct_k = correct[:k].reshape(-1).float().sum(0, keepdim=True)
             res.append(correct_k.mul_(100.0 / batch_size))
         return res
+
+def save_checkpoint(state, is_best, filename='checkpoint.pth.tar'):
+    torch.save(state, filename)
+    if is_best:
+        shutil.copyfile(filename, 'model_best.pth.tar')
 
 def train_batch(epoch, dataloader, net, criterion, optimizer, log_freq=2000):
     batch_time = AverageMeter('Time', ':6.3f')
@@ -150,7 +156,15 @@ def valid_batch(epoch, dataloader, net, criterion, optimizer, log_freq=2000):
 def train_network(epoch, tloader, vloader, net, criterion, optimizer, log_freq=2000):
     for ep in tqdm(range(epoch)):
         train_batch(ep, tloader, net, criterion, optimizer, log_freq=log_freq)
-        valid_batch(ep, vloader, net, criterion, optimizer, log_freq=log_freq)
+        acc1 = valid_batch(ep, vloader, net, criterion, optimizer, log_freq=log_freq)
+        is_best = acc1 > best_acc1
+        best_acc1 = max(acc1, best_acc1)
+        save_checkpoint({
+                'epoch': epoch + 1,
+                'state_dict': net.state_dict(),
+                'best_acc1': best_acc1,
+                'optimizer' : optimizer.state_dict(),
+            }, is_best)
 
 
 
