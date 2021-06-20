@@ -11,6 +11,8 @@ os.environ['CUDA_LAUNCH_BLOCKING'] = '1'
 
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
+best_acc1 = 0
+
 def train_batch(epoch, dataloader, net, criterion, optimizer, log_freq=2000):
     batch_time = AverageMeter('Time', ':6.3f')
     data_time = AverageMeter('Data', ':6.3f')
