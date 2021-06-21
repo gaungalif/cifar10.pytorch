@@ -15,7 +15,9 @@ from pathlib import Path
 
 from cifar.datasets import loader
 from cifar.models.models import MyNetwork
+from cifar.models.squeeze import SqueezeNet
 from cifar.trainer import task
+
 
 
 
@@ -29,6 +31,7 @@ if __name__ == "__main__":
     parser.add_argument('-b','--bsize',type=int, help='batch size', default=32)
     parser.add_argument('-n','--num_worker',type=int, help='num worker', default=8)
     parser.add_argument('-o','--optimizer',type=str, help='optimizer', required=True)
+    parser.add_argument('--net',type=str, help='net', required=True)
     args = parser.parse_args()
     
     
@@ -40,17 +43,22 @@ if __name__ == "__main__":
     
     BSIZE = args.bsize
     NUM_WORKER = args.num_worker
+    NET = args.net
+    if NET == 'conv':
+        NET = MyNetwork(ichan=3, clazz=10, imsize=(64,64)).to(task.device)
+    elif NET == 'sq':
+        NET = SqueezeNet(10)
+    else:
+        print("net kau mana")
     
-    net = MyNetwork(ichan=3, clazz=10, imsize=(64,64)).to(task.device)
-
     OPTIMIZER = args.optimizer
     if OPTIMIZER == 'sgd':
-        OPTIMIZER = optim.SGD(net.parameters(), LR, MOMENTUM)
+        OPTIMIZER = optim.SGD(NET.parameters(), LR, MOMENTUM)
     elif OPTIMIZER == 'adam':
-        OPTIMIZER = optim.Adam(net.parameters(), LR)
+        OPTIMIZER = optim.Adam(NET.parameters(), LR)
     else:
         print("error cuy")
-    save_path = 'l{}_e{}_b{}_{}'.format(LR,EPOCHS,BSIZE,args.optimizer)
+    save_path = 'l{}_e{}_b{}_{}_net{}'.format(LR,EPOCHS,BSIZE,args.optimizer,args.net)
 
     curr_dir = Path(curr_dir)
     base_dir = curr_dir.joinpath('dataset')
@@ -60,7 +68,7 @@ if __name__ == "__main__":
 
     
     criterion = nn.CrossEntropyLoss()
-    state_dict = net.state_dict()
+    state_dict = NET.state_dict()
     print(OPTIMIZER)
-    task.train_network(EPOCHS, train_loader, valid_loader, net, criterion, OPTIMIZER, LOG_FREQ)  
+    task.train_network(EPOCHS, train_loader, valid_loader, NET, criterion, OPTIMIZER, LOG_FREQ)  
     torch.save(state_dict, fpath)
