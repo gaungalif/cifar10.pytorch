@@ -47,7 +47,7 @@ if __name__ == "__main__":
     if NET == 'conv':
         NET = MyNetwork(ichan=3, clazz=10, imsize=(64,64)).to(task.device)
     elif NET == 'sq':
-        NET = SqueezeNet(10)
+        NET = SqueezeNet(10).to(task.device)
     else:
         print("net kau mana")
     
