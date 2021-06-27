@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-from torch.nn.modules.linear import Linear
+
 
 
 class Depthwise(nn.Module):

@@ -17,6 +17,7 @@ from cifar.datasets import loader
 from cifar.models.models import MyNetwork
 from cifar.models.squeeze import SqueezeNet
 from cifar.models.mobile import MobileNet
+from cifar.models.small_mobile import SmallMobile
 from cifar.trainer import task
 
 
@@ -33,6 +34,9 @@ if __name__ == "__main__":
     parser.add_argument('-n','--num_worker',type=int, help='num worker', default=8)
     parser.add_argument('-o','--optimizer',type=str, help='optimizer', required=True)
     parser.add_argument('--net',type=str, help='net', required=True)
+    parser.add_argument('-tr','--train_resized',type=int, help='train resized', default=64)
+    parser.add_argument('-vr','--valid_resized',type=int, help='valid resized', default=64)
+    parser.add_argument('-rt','--train_rotate',type=int, help='train rotate', default=30)
     args = parser.parse_args()
     
     
@@ -51,6 +55,8 @@ if __name__ == "__main__":
         NET = SqueezeNet(10).to(task.device)
     elif NET == 'mb':
         NET = MobileNet(1000).to(task.device)
+    elif NET == 'smb':
+        NET = SmallMobile(1000).to(task.device)
     else:
         print("net kau mana")
     
@@ -62,11 +68,15 @@ if __name__ == "__main__":
     else:
         print("error cuy")
     save_path = 'l{}_e{}_b{}_{}_net{}'.format(LR,EPOCHS,BSIZE,args.optimizer,args.net)
+    
+    TR = args.train_resized
+    VR = args.valid_resized
+    RO = args.train_rotate
 
     curr_dir = Path(curr_dir)
     base_dir = curr_dir.joinpath('dataset')
-    train_loader, trainset = loader.train_loader(base_dir, BSIZE, NUM_WORKER)
-    valid_loader, validset = loader.valid_loader(base_dir, BSIZE, NUM_WORKER)
+    train_loader, trainset = loader.train_loader(base_dir, BSIZE, NUM_WORKER,RO,TR)
+    valid_loader, validset = loader.valid_loader(base_dir, BSIZE, NUM_WORKER,VR)
     fpath = curr_dir.joinpath(save_path)
 
     
