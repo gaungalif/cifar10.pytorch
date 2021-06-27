@@ -35,7 +35,7 @@ if __name__ == "__main__":
     parser.add_argument('--net',type=str, help='net', required=True)
     parser.add_argument('-tr','--train_resized',type=int, help='train resized', default=64)
     parser.add_argument('-vr','--valid_resized',type=int, help='valid resized', default=64)
-    parser.add_argument('-rt','--train_rotate',type=int, help='train rotate', default=30)
+    parser.add_argument('-ro','--train_rotate',type=int, help='train rotate', default=30)
     args = parser.parse_args()
     
     
