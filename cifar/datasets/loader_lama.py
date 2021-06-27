@@ -6,14 +6,14 @@ from torch.utils.data import DataLoader
 mean_val, std_val = [0.485, 0.456, 0.406], [0.229, 0.224, 0.225]
 train_transforms =  T.Compose([
     T.RandomRotation(30),
-    T.RandomResizedCrop(224),
+    T.RandomResizedCrop(64),
     T.RandomHorizontalFlip(),
     T.ToTensor(),
     T.Normalize(mean_val,std_val)
 ])
 
 valid_transforms =  T.Compose([
-    T.Resize(224),
+    T.Resize(64),
     T.ToTensor(),
     T.Normalize(mean_val,std_val)
 ])

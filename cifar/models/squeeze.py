@@ -1,6 +1,7 @@
-import torch.nn as nn
 import torch
+import torch.nn as nn
 import torch.nn.init as init
+
 class Fire(nn.Module):
     def __init__(self, inplanes, squeeze_planes, expand1x1_planes, expand3x3_planes):
         super(Fire, self).__init__()
@@ -75,3 +76,4 @@ class SqueezeNet(nn.Module):
         x = self.classifier(x)
         x = torch.flatten(x, start_dim=1)
         return x
+

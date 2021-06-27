@@ -16,6 +16,7 @@ from pathlib import Path
 from cifar.datasets import loader
 from cifar.models.models import MyNetwork
 from cifar.models.squeeze import SqueezeNet
+from cifar.models.mobile import MobileNet
 from cifar.trainer import task
 
 
@@ -48,6 +49,8 @@ if __name__ == "__main__":
         NET = MyNetwork(ichan=3, clazz=10, imsize=(64,64)).to(task.device)
     elif NET == 'sq':
         NET = SqueezeNet(10).to(task.device)
+    elif NET == 'mb':
+        NET = MobileNet(1000).to(task.device)
     else:
         print("net kau mana")
     

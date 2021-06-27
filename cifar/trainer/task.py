@@ -37,6 +37,7 @@ def train_batch(epoch, dataloader, net, criterion, optimizer, log_freq=2000):
         inputs, labels = data
         inputs, labels = inputs.to(device), labels.to(device)
         output = net(inputs)
+        output = torch.softmax(output, dim=1)
         loss = criterion(output,labels)
 
         acc1, acc5 = AccuracyTopK(topk=(1,5))(output=output, target=labels)
@@ -78,6 +79,8 @@ def valid_batch(dataloader, net, criterion, log_freq=2000):
             inputs, labels = inputs.to(device), labels.to(device)
             
             output = net(inputs)
+            output = torch.softmax(output, dim=1)
+
             loss = criterion(output,labels)
             
             acc1, acc5 = AccuracyTopK(topk=(1,5))(output=output, target=labels)

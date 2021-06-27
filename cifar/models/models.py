@@ -14,7 +14,8 @@ class SingleConvLayer(nn.Module):
         x = self.relu(x)
         x = self.pool(x)
         return x
-    
+
+
 class DoubleConvLayer(nn.Module):
     def __init__(self, ichan, hchan, ochan, ksize=3):
         super(DoubleConvLayer, self).__init__()
