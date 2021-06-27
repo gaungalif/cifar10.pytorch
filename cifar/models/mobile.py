@@ -5,21 +5,21 @@ import torch.nn as nn
 
 class Depthwise(nn.Module):
     def __init__(self, inplanes, outplanes, stride, padding=1,
-                kernel_size = 3):
+                kernel_size = 3, bias=False):
         super(Depthwise, self).__init__()
         self.inplanes = inplanes
-        self.depthwise = nn.Conv2d(inplanes, inplanes, kernel_size=kernel_size, groups=inplanes, padding=padding, stride=stride)
-        self.pointwise = nn.Conv2d(inplanes, outplanes, kernel_size=kernel_size)
-        self.depthwise = torch.nn.Sequential(self.depthwise, self.pointwise)
-        self.conv = nn.Conv2d(outplanes, outplanes, kernel_size=1)
+        self.depthwise = nn.Conv2d(inplanes, inplanes, kernel_size=kernel_size, groups=inplanes, padding=padding, stride=stride, bias=bias)
+        self.pointwise = nn.Conv2d(inplanes, outplanes, kernel_size=kernel_size, bias=bias)
+        self.separable = torch.nn.Sequential(self.depthwise, self.pointwise)
+        self.conv1x1 = nn.Conv2d(outplanes, outplanes, kernel_size=1)
         self.bn = nn.BatchNorm2d(outplanes)
         self.relu = nn.ReLU(inplace=True)
         
     def forward(self,x):
-        x = self.depthwise(x)
+        x = self.separable(x)
         x = self.bn(x)
         x = self.relu(x)
-        x = self.conv(x)
+        x = self.conv1x1(x)
         x = self.bn(x)
         x = self.relu(x)
         return x

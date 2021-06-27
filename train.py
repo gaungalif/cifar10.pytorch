@@ -17,7 +17,6 @@ from cifar.datasets import loader
 from cifar.models.models import MyNetwork
 from cifar.models.squeeze import SqueezeNet
 from cifar.models.mobile import MobileNet
-from cifar.models.small_mobile import SmallMobile
 from cifar.trainer import task
 
 
@@ -55,8 +54,6 @@ if __name__ == "__main__":
         NET = SqueezeNet(10).to(task.device)
     elif NET == 'mb':
         NET = MobileNet(1000).to(task.device)
-    elif NET == 'smb':
-        NET = SmallMobile(1000).to(task.device)
     else:
         print("net kau mana")
     
