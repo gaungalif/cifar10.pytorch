@@ -63,45 +63,45 @@ class MobileNet(nn.Module):
         self.features = nn.Sequential(
             ThreeConv(3, 32),
             DepthConv(32, stride=1),
-            OneConv(32, 32, kernel_size=3),
+            OneConv(32, 32, kernel_size=3, padding=1),
             OneConv(32, 64),
             DepthConv(64, stride=2),  
-            OneConv(64, 64, kernel_size=3),
+            OneConv(64, 64, kernel_size=3, padding=1),
             OneConv(64, 128),       
             DepthConv(128, stride=1),
-            OneConv(128, 128, kernel_size=3),
+            OneConv(128, 128, kernel_size=3, padding=1),
             OneConv(128, 128), 
             DepthConv(128, stride=2),
-            OneConv(128, 128, kernel_size=3),
+            OneConv(128, 128, kernel_size=3, padding=1),
             OneConv(128, 256),
             DepthConv(256, stride=1),
-            OneConv(256, 256, kernel_size=3),
+            OneConv(256, 256, kernel_size=3, padding=1),
             OneConv(256, 256),
             DepthConv(256, stride=2),
-            OneConv(256, 256, kernel_size=3),
+            OneConv(256, 256, kernel_size=3, padding=1),
             OneConv(256, 512),
             #5
             DepthConv(512, stride=1),
-            OneConv(512, 512, kernel_size=3),
+            OneConv(512, 512, kernel_size=3, padding=1),
             OneConv(512, 512),
             DepthConv(512, stride=1),
-            OneConv(512, 512, kernel_size=3),
+            OneConv(512, 512, kernel_size=3, padding=1),
             OneConv(512, 512),
             DepthConv(512, stride=1),
-            OneConv(512, 512, kernel_size=3),
+            OneConv(512, 512, kernel_size=3, padding=1),
             OneConv(512, 512),
             DepthConv(512, stride=1),
-            OneConv(512, 512, kernel_size=3),
+            OneConv(512, 512, kernel_size=3, padding=1),
             OneConv(512, 512),
             DepthConv(512, stride=1),
-            OneConv(512, 512, kernel_size=3),
+            OneConv(512, 512, kernel_size=3, padding=1),
             OneConv(512, 512),
             #5 end
             DepthConv(512, stride=2),
-            OneConv(512, 512, kernel_size=3),
+            OneConv(512, 512, kernel_size=3, padding=1),
             OneConv(512, 1024),
             DepthConv(1024, stride=2, padding=4),
-            OneConv(1024, 1024, kernel_size=3),
+            OneConv(1024, 1024, kernel_size=3, padding=1),
             OneConv(1024, 1024),
             nn.AvgPool2d(7,7),
         )
@@ -113,3 +113,7 @@ class MobileNet(nn.Module):
         x = torch.flatten(x, start_dim=1)
         x = self.classifier(x)
         return x
+# x = torch.rand(3,3,224,224)
+# net = MobileNet()
+# x = net(x)
+# print(x.shape)
