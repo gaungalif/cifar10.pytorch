@@ -6,6 +6,9 @@ sys.path.append(curr_dir)
 
 from cifar.models.models import MyNetwork
 from cifar.models.squeeze import SqueezeNet
+from cifar.models.mobile import MobileNet
+from cifar.models.mobile_baru import MobileNew
+from cifar.trainer import task
 
 from pathlib import Path
 import argparse
@@ -21,10 +24,14 @@ args = parser.parse_args()
 
 save_path = args.save_path
 NET = args.net
-if NET == 'sq':
-    NET = SqueezeNet(10) 
-elif NET == 'conv':
-    NET = MyNetwork(ichan=3, clazz=10, imsize=(64,64))
+if NET == 'conv':
+    NET = MyNetwork(ichan=3, clazz=10, imsize=(64,64)).to(task.device)
+elif NET == 'sq':
+    NET = SqueezeNet(10).to(task.device)
+elif NET == 'mb':
+    NET = MobileNet(1000).to(task.device)
+elif NET == 'mbb':
+    NET = MobileNew(1000).to(task.device)
 else:
     print("false net")
 
