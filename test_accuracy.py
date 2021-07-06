@@ -17,6 +17,8 @@ from cifar.datasets import loader
 
 import torch
 
+device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+
 parser = argparse.ArgumentParser()
 parser.add_argument('-sp','--save_path',type=str, help='save path', required=True)
 parser.add_argument('--net',type=str, help='net', required=True)
@@ -48,6 +50,7 @@ NET.load_state_dict(loaded_state_dict)
 idx = 0
 
 imgs, lbls = next(iter(valid_loader))
+imgs, lbls = imgs.to(device), lbls.to(device)
 out = NET(imgs)
 out = torch.softmax(out, dim=0)
 out = torch.argmax(out, dim=1)
