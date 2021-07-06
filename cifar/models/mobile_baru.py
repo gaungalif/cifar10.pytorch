@@ -57,7 +57,7 @@ class MobileNew(nn.Module):
             SeparableConv2d(512, 512, kernel_size=3, stride=1),
             # end 5
             SeparableConv2d(512, 1024, kernel_size=3, stride=2),
-            SeparableConv2d(1024, 1024, kernel_size=3, stride=2, padding=4),
+            SeparableConv2d(1024, 1024, kernel_size=3, stride=1),
             nn.AvgPool2d(7,7),
         )
 
