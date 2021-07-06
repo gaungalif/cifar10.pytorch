@@ -1,6 +1,6 @@
 import os
 import time
-from typing import Tuple
+
 
 import torch
 from torch.functional import Tensor
@@ -30,25 +30,25 @@ def train_batch(epoch, dataloader, net, criterion, optimizer, log_freq=2000):
     net.train()
 
     end = time.time()  
-
-    for i, data in tqdm(enumerate(dataloader, 0)):
+    
+    for i, (inputs, labels) in tqdm(enumerate(dataloader, 0)):
+        # print('i =', i,' data =', data)
         data_time.update(time.time() - end)
 
-        inputs, labels = data
         inputs, labels = inputs.to(device), labels.to(device)
         output = net(inputs)
         output = torch.softmax(output, dim=1)
         loss = criterion(output,labels)
-
+       
         acc1, acc5 = AccuracyTopK(topk=(1,5))(output=output, target=labels)
         losses.update(loss.item(), inputs.size(0))
         top1.update(acc1[0], inputs.size(0))
         top5.update(acc5[0], inputs.size(0))
 
-        
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
+
 
         batch_time.update(time.time() - end)
         end = time.time()

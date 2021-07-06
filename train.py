@@ -1,4 +1,3 @@
-from collections import defaultdict
 import os
 import sys
 
@@ -75,8 +74,8 @@ if __name__ == "__main__":
 
     curr_dir = Path(curr_dir)
     base_dir = curr_dir.joinpath('dataset')
-    train_loader, trainset = loader.train_loader(base_dir, BSIZE, NUM_WORKER,RO,TR)
-    valid_loader, validset = loader.valid_loader(base_dir, BSIZE, NUM_WORKER,VR)
+    train_loader, trainset = loader.train_loader(base_dir, BSIZE, NUM_WORKER, RO, TR)
+    valid_loader, validset = loader.valid_loader(base_dir, BSIZE, NUM_WORKER, VR)
     fpath = curr_dir.joinpath(save_path)
 
     

@@ -69,7 +69,8 @@ class MobileNew(nn.Module):
         x = self.classifier(x)
         return x
 
-# x = torch.rand(3,3,224,224)
-# net = MobileNet()
+x = torch.rand(3,3,224,224)
+net = MobileNew()
+net.train()
 # x = net(x)
 # print(x.shape)
