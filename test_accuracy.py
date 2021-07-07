@@ -7,7 +7,6 @@ sys.path.append(curr_dir)
 from cifar.models.models import MyNetwork
 from cifar.models.squeeze import SqueezeNet
 from cifar.models.mobile import MobileNet
-from cifar.models.mobile_baru import MobileNew
 from cifar.trainer import task
 
 from pathlib import Path
