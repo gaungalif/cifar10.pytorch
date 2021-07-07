@@ -3,7 +3,7 @@ import torch
 from torch import Tensor
 import shutil
 
-def accuracy(output, target, topk=(1,)):
+def accuracy(output: Tensor, target: Tensor, topk:Tuple =(1,)):
     """Computes the accuracy over the k top predictions for the specified values of k"""
     
     with torch.no_grad():

@@ -1,42 +1,27 @@
 import torch
 import torch.nn as nn
-from torch.nn.modules.conv import Conv2d
 
-
-
-class depthwise(nn.Module):
-    def __init__(self, inplanes, kernel_size=3, stride=1, padding=1, bias=False):
-        super(depthwise, self).__init__()
-        self.depthwise = nn.Conv2d(inplanes, inplanes, kernel_size=kernel_size, stride=stride, padding=padding, groups=inplanes, bias=bias)
+class SeparableConv2d(nn.Module):
+    def __init__(self, in_channels, out_channels, kernel_size, stride=1, padding=1, bias=False):
+        super(SeparableConv2d, self).__init__()
+        self.depthwise = nn.Conv2d(in_channels, in_channels, kernel_size=kernel_size, 
+                                   groups=in_channels, bias=bias, padding=padding, stride=stride)
+        self.pointwise = nn.Conv2d(in_channels, out_channels, 
+                                   kernel_size=1, bias=bias, stride=1)
+        self.bn = nn.BatchNorm2d(in_channels)
+        self.relu = nn.ReLU(inplace=True)
+        self.bn_point = nn.BatchNorm2d(out_channels)
+        self.relu_point = nn.ReLU(inplace=True)
 
     def forward(self, x):
         out = self.depthwise(x)
+        out = self.bn(out)
+        out = self.relu(out)
+        
+        out = self.pointwise(out)
+        out = self.bn_point(out)
+        out = self.relu_point(out)
         return out
-
-class DepthConv(nn.Module):
-    def __init__(self, inplanes, kernel_size=3, stride=1,padding=1, bias=False):
-        super(DepthConv, self).__init__()
-        self.dw_block = nn.Sequential(
-            depthwise(inplanes, kernel_size, stride, padding, bias),
-            nn.BatchNorm2d(inplanes),
-            nn.ReLU(inplace=True)
-        )
-    def forward(self, x):
-        out = self.dw_block(x)
-        return out
-
-class OneConv(nn.Module):
-    def __init__(self, inplanes, outplanes, padding=0, kernel_size=1, stride=1, bias=False):
-        super(OneConv, self).__init__()
-        self.one_conv = nn.Sequential(
-            nn.Conv2d(inplanes, outplanes, kernel_size=kernel_size, stride=stride, padding=padding, bias=bias ),
-            nn.BatchNorm2d(outplanes),
-            nn.ReLU(inplace=True)
-        )
-    def forward(self, x):
-        out = self.one_conv(x)
-        return out
-
 
 class ThreeConv(nn.Module):
     def __init__(self, inplanes, outplanes, kernel_size=3, stride=2, padding=1, bias=False):
@@ -51,58 +36,28 @@ class ThreeConv(nn.Module):
         out = self.three_conv(x)
         return out
 
-class Flatten(nn.Module):
-    def forward(self, input):
-        return input.view(input.size(0), -1)
-
 class MobileNet(nn.Module):
     def __init__(self, num_classes=1000):
         super(MobileNet, self).__init__()
         self.num_classes = num_classes
         
         self.features = nn.Sequential(
-            ThreeConv(3, 32),
-            DepthConv(32, stride=1),
-            # OneConv(32, 32, kernel_size=3, padding=1),
-            OneConv(32, 64),
-            DepthConv(64, stride=2),  
-            # OneConv(64, 64, kernel_size=3, padding=1),
-            OneConv(64, 128),       
-            DepthConv(128, stride=1),
-            # OneConv(128, 128, kernel_size=3, padding=1),
-            OneConv(128, 128), 
-            DepthConv(128, stride=2),
-            # OneConv(128, 128, kernel_size=3, padding=1),
-            OneConv(128, 256),
-            DepthConv(256, stride=1),
-            # OneConv(256, 256, kernel_size=3, padding=1),
-            OneConv(256, 256),
-            DepthConv(256, stride=2),
-            # OneConv(256, 256, kernel_size=3, padding=1),
-            OneConv(256, 512),
-            #5
-            DepthConv(512, stride=1),
-            # OneConv(512, 512, kernel_size=3, padding=1),
-            OneConv(512, 512),
-            DepthConv(512, stride=1),
-            # OneConv(512, 512, kernel_size=3, padding=1),
-            OneConv(512, 512),
-            DepthConv(512, stride=1),
-            # OneConv(512, 512, kernel_size=3, padding=1),
-            OneConv(512, 512),
-            DepthConv(512, stride=1),
-            # OneConv(512, 512, kernel_size=3, padding=1),
-            OneConv(512, 512),
-            DepthConv(512, stride=1),
-            # OneConv(512, 512, kernel_size=3, padding=1),
-            OneConv(512, 512),
-            #5 end
-            DepthConv(512, stride=2),
-            # OneConv(512, 512, kernel_size=3, padding=1),
-            OneConv(512, 1024),
-            DepthConv(1024, stride=2, padding=4),
-            # OneConv(1024, 1024, kernel_size=3, padding=1),
-            OneConv(1024, 1024),
+            ThreeConv(3,32),
+            SeparableConv2d(32, 64, kernel_size=3, stride=1),
+            SeparableConv2d(64, 128, kernel_size=3, stride=2),
+            SeparableConv2d(128, 128, kernel_size=3, stride=1),
+            SeparableConv2d(128, 256, kernel_size=3, stride=2),
+            SeparableConv2d(256, 256, kernel_size=3, stride=1),
+            SeparableConv2d(256, 512, kernel_size=3, stride=2),
+            # 5
+            SeparableConv2d(512, 512, kernel_size=3, stride=1),
+            SeparableConv2d(512, 512, kernel_size=3, stride=1),
+            SeparableConv2d(512, 512, kernel_size=3, stride=1),
+            SeparableConv2d(512, 512, kernel_size=3, stride=1),
+            SeparableConv2d(512, 512, kernel_size=3, stride=1),
+            # end 5
+            SeparableConv2d(512, 1024, kernel_size=3, stride=2),
+            SeparableConv2d(1024, 1024, kernel_size=3, stride=2, padding=4),
             nn.AvgPool2d(7,7),
         )
 
@@ -113,7 +68,9 @@ class MobileNet(nn.Module):
         x = torch.flatten(x, start_dim=1)
         x = self.classifier(x)
         return x
+
 # x = torch.rand(3,3,224,224)
-# net = MobileNet()
+# net = MobileNew()
+# net.train()
 # x = net(x)
 # print(x.shape)

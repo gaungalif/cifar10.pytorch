@@ -16,7 +16,6 @@ from cifar.datasets import loader
 from cifar.models.models import MyNetwork
 from cifar.models.squeeze import SqueezeNet
 from cifar.models.mobile import MobileNet
-from cifar.models.mobile_baru import MobileNew
 from cifar.trainer import task
 
 
@@ -54,8 +53,6 @@ if __name__ == "__main__":
         NET = SqueezeNet(10).to(task.device)
     elif NET == 'mb':
         NET = MobileNet(1000).to(task.device)
-    elif NET == 'mbb':
-        NET = MobileNew(1000).to(task.device)
     else:
         print("net kau mana")
     
@@ -66,7 +63,7 @@ if __name__ == "__main__":
         OPTIMIZER = optim.Adam(NET.parameters(), LR)
     else:
         print("error cuy")
-    save_path = 'l{}_e{}_b{}_{}_net{}'.format(LR,EPOCHS,BSIZE,args.optimizer,args.net)
+    save_path = 'lr{}_ep{}_opt{}_net{}'.format(LR,EPOCHS,args.optimizer,args.net)
     
     TR = args.train_resized
     VR = args.valid_resized
@@ -81,6 +78,6 @@ if __name__ == "__main__":
     
     criterion = nn.CrossEntropyLoss()
     state_dict = NET.state_dict()
-    print(OPTIMIZER)
+    # print(OPTIMIZER)
     task.train_network(EPOCHS, train_loader, valid_loader, NET, criterion, OPTIMIZER, LOG_FREQ)  
     torch.save(state_dict, fpath)
