@@ -45,8 +45,6 @@ elif NET == 'sq':
     NET = SqueezeNet(10).to(task.device)
 elif NET == 'mb':
     NET = MobileNet(1000).to(task.device)
-elif NET == 'mbb':
-    NET = MobileNew(1000).to(task.device)
 else:
     print("false net")
 
@@ -65,8 +63,8 @@ idx = 0
 imgs, lbls = next(iter(valid_loader))
 imgs, lbls = imgs.to(device), lbls.to(device)
 out = NET(imgs)
-out = torch.argmax(out, dim=1)
-out = torch.softmax(out, dim=1)
+out = torch.argmax(out, dim=0)
+out = torch.softmax(out, dim=0)
 
 true = 0
 false = 0
