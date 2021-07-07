@@ -64,7 +64,7 @@ imgs, lbls = next(iter(valid_loader))
 imgs, lbls = imgs.to(device), lbls.to(device)
 out = NET(imgs)
 # out = torch.softmax(out, dim=0)
-# out = torch.argmax(out, dim=0)
+out = torch.argmax(out, dim=0)
 
 true = 0
 false = 0
