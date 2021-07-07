@@ -68,7 +68,7 @@ out = torch.argmax(out, dim=0)
 
 true = 0
 false = 0
-for (idx, data) in range(len(out)):
+for idx, data in range(len(out)):
     print(out[idx]==lbls[idx])
     if(out[idx]==lbls[idx]):
         true+=1
