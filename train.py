@@ -2,7 +2,7 @@ from math import e
 import os
 import sys
 
-from torch._C import device
+
 
 curr_dir = os.getcwd()
 sys.path.append(curr_dir)
@@ -21,6 +21,12 @@ from cifar.models.squeeze import SqueezeNet
 from cifar.models.mobile import MobileNet
 from cifar.models.mobilev2 import MobileNetV2
 from cifar.trainer import task
+from typing import *
+
+import gc
+# del variables
+gc.collect()
+torch.cuda.empty_cache()
 
 
 
