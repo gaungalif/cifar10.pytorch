@@ -1,5 +1,8 @@
+from math import e
 import os
 import sys
+
+from torch._C import device
 
 curr_dir = os.getcwd()
 sys.path.append(curr_dir)
@@ -16,6 +19,7 @@ from cifar.datasets import loader
 from cifar.models.models import MyNetwork
 from cifar.models.squeeze import SqueezeNet
 from cifar.models.mobile import MobileNet
+from cifar.models.mobilev2 import MobileNetV2
 from cifar.trainer import task
 
 
@@ -53,6 +57,8 @@ if __name__ == "__main__":
         NET = SqueezeNet(10).to(task.device)
     elif NET == 'mb':
         NET = MobileNet(1000).to(task.device)
+    elif NET == 'mb2':
+        NET = MobileNetV2(1000).to(task.device)
     else:
         print("net kau mana")
     
@@ -61,6 +67,8 @@ if __name__ == "__main__":
         OPTIMIZER = optim.SGD(NET.parameters(), LR, MOMENTUM)
     elif OPTIMIZER == 'adam':
         OPTIMIZER = optim.Adam(NET.parameters(), LR)
+    elif OPTIMIZER == 'rms':
+        OPTIMIZER = optim.RMSprop(NET.parameters(), LR, MOMENTUM, weight_decay=0.00004)
     else:
         print("error cuy")
     save_path = 'lr{}_ep{}_opt{}_net{}'.format(LR,EPOCHS,args.optimizer,args.net)

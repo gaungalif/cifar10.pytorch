@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import *
 import torch
 from torch import Tensor
 import shutil

@@ -1,5 +1,7 @@
 import torch
 import torch.nn as nn
+from torch import Tensor
+from typing import *
 
 class SeparableConv2d(nn.Module):
     def __init__(self, in_channels, out_channels, kernel_size, stride=1, padding=1, bias=False):
@@ -63,7 +65,7 @@ class MobileNet(nn.Module):
 
         self.classifier = nn.Linear(1024,1000)
 
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
+    def forward(self, x: Tensor) -> Tensor:
         x = self.features(x)
         x = torch.flatten(x, start_dim=1)
         x = self.classifier(x)

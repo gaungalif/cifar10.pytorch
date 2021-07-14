@@ -7,6 +7,7 @@ sys.path.append(curr_dir)
 from cifar.models.models import MyNetwork
 from cifar.models.squeeze import SqueezeNet
 from cifar.models.mobile import MobileNet
+from cifar.models.mobilev2 import MobileNetV2
 from cifar.trainer import task
 
 from pathlib import Path
@@ -45,6 +46,8 @@ elif NET == 'sq':
     NET = SqueezeNet(10).to(task.device)
 elif NET == 'mb':
     NET = MobileNet(1000).to(task.device)
+elif NET == 'mb2':
+    NET = MobileNetV2(1000).to(task.device)
 else:
     print("false net")
 

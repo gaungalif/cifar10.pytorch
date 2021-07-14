@@ -36,7 +36,7 @@ def train_batch(epoch, dataloader, net, criterion, optimizer, log_freq=2000):
         # print('i =', i,' data =', data)
         data_time.update(time.time() - end)
         inputs, labels = inputs.to(device), labels.to(device)
-        output = net(inputs)
+        output = net(inputs)    
         # output = torch.softmax(output, dim=1)
         
         loss = criterion(output,labels)
@@ -56,6 +56,7 @@ def train_batch(epoch, dataloader, net, criterion, optimizer, log_freq=2000):
         
         if i % log_freq == 0:
             progress.display(i)
+    
 
     
             
