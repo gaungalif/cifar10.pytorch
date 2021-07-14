@@ -64,7 +64,7 @@ if __name__ == "__main__":
     elif NET == 'mb':
         NET = MobileNet(1000).to(task.device)
     elif NET == 'mb2':
-        NET = MobileNetV2(1000).to(task.device)
+        NET = MobileNetV2().to(task.device)
     else:
         print("net kau mana")
     
