@@ -12,7 +12,7 @@ import argparse
 import torch
 import torch.nn as nn
 import torch.optim as optim
-import torch.optim.lr_scheduler as scheduler
+
 
 from pathlib import Path
 
@@ -85,11 +85,11 @@ if __name__ == "__main__":
 
     SCHEDULER = args.scheduler
     if SCHEDULER == 'exp':
-        SCHEDULER = scheduler.ExponentialLR(optimizer=OPTIMIZER, gamma=DECAY)
+        SCHEDULER = optim.lr_scheduler.ExponentialLR(optimizer=OPTIMIZER, gamma=DECAY)
     elif SCHEDULER == 'step':
-        SCHEDULER = scheduler.StepLR(optimizer=OPTIMIZER, step_size=30, gamma=0.1)
+        SCHEDULER = optim.lr_scheduler.StepLR(optimizer=OPTIMIZER, step_size=30, gamma=0.1)
     elif SCHEDULER == 'mul':
-        SCHEDULER = scheduler.MultiStepLR(optimizer=OPTIMIZER, milestones=[30,80], gamma=0.1)
+        SCHEDULER = optim.lr_scheduler.MultiStepLR(optimizer=OPTIMIZER, milestones=[30,80], gamma=0.1)
     
     TR = args.train_resized
     VR = args.valid_resized

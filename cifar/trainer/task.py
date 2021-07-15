@@ -4,7 +4,7 @@ import time
 
 import torch
 from torch.functional import Tensor
-import torch.optim
+import torch.optim as optim
 from tqdm.notebook import tqdm 
 from cifar.metrics.metrics import *
 from progress import ProgressMeter 
@@ -101,11 +101,12 @@ def valid_batch(dataloader, net, criterion, log_freq=2000):
     return top1.avg
 
 
-def train_network(epoch, tloader, vloader, net, criterion, optimizer, scheduler, log_freq=2000 ):
+def train_network(epoch, tloader, vloader, net, criterion, optimizer, scheduler, log_freq=2000):
     global best_acc1
     for ep in tqdm(range(epoch)):
         train_batch(ep, tloader, net, criterion, optimizer, log_freq=log_freq)
         valid_batch(vloader, net, criterion,  log_freq=log_freq)
+        scheduler.step()
         acc1 = valid_batch(vloader, net, criterion, log_freq=log_freq)
         is_best = acc1 > best_acc1
         best_acc1 = max(acc1, best_acc1)
@@ -115,4 +116,3 @@ def train_network(epoch, tloader, vloader, net, criterion, optimizer, scheduler,
                 'best_acc1': best_acc1,
                 'optimizer' : optimizer.state_dict(),
             }, is_best)
-        scheduler.step()
