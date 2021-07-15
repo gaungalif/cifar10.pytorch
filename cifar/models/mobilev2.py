@@ -82,7 +82,7 @@ class InvertedResidual(nn.Module):
             return self.conv(x)
 
 class MobileNetV2(nn.Module):
-    def __init__(self, width_mult: float = 1.0,
+    def __init__(self, width_mult: float = 1.4,
                 round_nearest: int = 8, num_classes: int =1000):
         super(MobileNetV2, self).__init__()
         in_planes = 32
