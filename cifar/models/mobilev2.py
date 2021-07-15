@@ -70,7 +70,7 @@ class InvertedResidual(nn.Module):
         layers.extend([
             SeparableConv2d(hidden_dim, oup, stride=stride, groups=hidden_dim),
         ])
-        print(layers)
+        # print(layers)
         self.conv = nn.Sequential(*layers)
         self.out_channels = oup
         self._is_cn = stride > 1
