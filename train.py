@@ -12,6 +12,7 @@ import argparse
 import torch
 import torch.nn as nn
 import torch.optim as optim
+import torch.optim.lr_scheduler as scheduler
 
 from pathlib import Path
 
@@ -41,6 +42,8 @@ if __name__ == "__main__":
     parser.add_argument('-b','--bsize',type=int, help='batch size', default=32)
     parser.add_argument('-n','--num_worker',type=int, help='num worker', default=8)
     parser.add_argument('-o','--optimizer',type=str, help='optimizer', required=True)
+    parser.add_argument('-dr','--decay_rate',type=float, help='decay rate', required=True)
+    parser.add_argument('-sch','--scheduler',type=str, help='scheduler', required=True)
     parser.add_argument('--net',type=str, help='net', required=True)
     parser.add_argument('-tr','--train_resized',type=int, help='train resized', default=64)
     parser.add_argument('-vr','--valid_resized',type=int, help='valid resized', default=64)
@@ -78,6 +81,15 @@ if __name__ == "__main__":
     else:
         print("error cuy")
     save_path = 'lr{}_ep{}_opt{}_net{}'.format(LR,EPOCHS,args.optimizer,args.net)
+    DECAY = args.decay_rate
+
+    SCHEDULER = args.scheduler
+    if SCHEDULER == 'exp':
+        SCHEDULER = scheduler.ExponentialLR(optimizer=OPTIMIZER, gamma=DECAY)
+    elif SCHEDULER == 'step':
+        SCHEDULER = scheduler.StepLR(optimizer=OPTIMIZER, step_size=30, gamma=0.1)
+    elif SCHEDULER == 'mul':
+        SCHEDULER = scheduler.MultiStepLR(optimizer=OPTIMIZER, milestones=[30,80], gamma=0.1)
     
     TR = args.train_resized
     VR = args.valid_resized
@@ -93,5 +105,5 @@ if __name__ == "__main__":
     criterion = nn.CrossEntropyLoss()
     state_dict = NET.state_dict()
     # print(OPTIMIZER)
-    task.train_network(EPOCHS, train_loader, valid_loader, NET, criterion, OPTIMIZER, LOG_FREQ)  
+    task.train_network(EPOCHS, train_loader, valid_loader, NET, criterion, OPTIMIZER, LOG_FREQ, SCHEDULER)  
     torch.save(state_dict, fpath)

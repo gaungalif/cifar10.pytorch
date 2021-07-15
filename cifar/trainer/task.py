@@ -101,14 +101,11 @@ def valid_batch(dataloader, net, criterion, log_freq=2000):
     return top1.avg
 
 
-def train_network(epoch, tloader, vloader, net, criterion, optimizer, log_freq=2000):
+def train_network(epoch, tloader, vloader, net, criterion, optimizer, scheduler, log_freq=2000 ):
     global best_acc1
-    decayRate = 0.98
-    my_lr_scheduler = torch.optim.lr_scheduler.ExponentialLR(optimizer=optimizer, gamma=decayRate)
     for ep in tqdm(range(epoch)):
         train_batch(ep, tloader, net, criterion, optimizer, log_freq=log_freq)
         valid_batch(vloader, net, criterion,  log_freq=log_freq)
-        my_lr_scheduler.step()
         acc1 = valid_batch(vloader, net, criterion, log_freq=log_freq)
         is_best = acc1 > best_acc1
         best_acc1 = max(acc1, best_acc1)
@@ -118,3 +115,4 @@ def train_network(epoch, tloader, vloader, net, criterion, optimizer, log_freq=2
                 'best_acc1': best_acc1,
                 'optimizer' : optimizer.state_dict(),
             }, is_best)
+        scheduler.step()
