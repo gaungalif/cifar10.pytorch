@@ -140,10 +140,10 @@ class MobileNetV2(nn.Module):
         x = self.classifier(x)
         return x
 
-mob = MobileNetV2(1.4)
-x = torch.rand(3,3,224,224)
-x = mob(x)
-print(x.shape)
+# mob = MobileNetV2(1.4)
+# x = torch.rand(3,3,224,224)
+# x = mob(x)
+# print(x.shape)
         
         
         
