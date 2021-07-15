@@ -105,5 +105,5 @@ if __name__ == "__main__":
     criterion = nn.CrossEntropyLoss()
     state_dict = NET.state_dict()
     # print(OPTIMIZER)
-    task.train_network(EPOCHS, train_loader, valid_loader, NET, criterion, OPTIMIZER, LOG_FREQ, SCHEDULER)  
+    task.train_network(EPOCHS, train_loader, valid_loader, NET, criterion, OPTIMIZER, SCHEDULER, LOG_FREQ)  
     torch.save(state_dict, fpath)
