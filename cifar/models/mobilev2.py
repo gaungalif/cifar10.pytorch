@@ -70,6 +70,7 @@ class InvertedResidual(nn.Module):
         layers.extend([
             SeparableConv2d(hidden_dim, oup, stride=stride, groups=hidden_dim),
         ])
+        print(layers)
         self.conv = nn.Sequential(*layers)
         self.out_channels = oup
         self._is_cn = stride > 1
@@ -87,7 +88,7 @@ class MobileNetV2(nn.Module):
         in_planes = 32
         last_planes = 1280
         self.in_channel = _make_divisible(in_planes * width_mult, round_nearest)
-        self.last_channel = _make_divisible(last_planes * width_mult, round_nearest)
+        self.last_channel = _make_divisible(last_planes * max(1.0,width_mult), round_nearest)
 
         self.num_classes = num_classes
 
@@ -139,10 +140,10 @@ class MobileNetV2(nn.Module):
         x = self.classifier(x)
         return x
 
-# mob = MobileNetV2()
-# x = torch.rand(3,3,224,224)
-# x = mob(x)
-# print(x.shape)
+mob = MobileNetV2(1.4)
+x = torch.rand(3,3,224,224)
+x = mob(x)
+print(x.shape)
         
         
         
