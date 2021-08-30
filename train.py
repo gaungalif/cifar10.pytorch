@@ -2,8 +2,6 @@ from math import e
 import os
 import sys
 
-
-
 curr_dir = os.getcwd()
 sys.path.append(curr_dir)
 
