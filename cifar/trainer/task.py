@@ -4,7 +4,6 @@ import time
 
 import torch
 from torch.functional import Tensor
-import torch.optim as optim
 from tqdm.notebook import tqdm 
 from cifar.metrics.metrics import *
 from progress import ProgressMeter 
@@ -16,7 +15,7 @@ device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
 best_acc1 = 0
 
-def train_batch(epoch, dataloader, net, criterion, optimizer, log_freq=2000):
+def train_batch(epoch, dataloader, net, criterion, optimizer, log_freq:int=2000):
     batch_time = AverageMeter('Time', ':6.3f')
     data_time = AverageMeter('Data', ':6.3f')
     losses = AverageMeter('Loss', ':.4e')
@@ -33,7 +32,7 @@ def train_batch(epoch, dataloader, net, criterion, optimizer, log_freq=2000):
     end = time.time()  
     
     for i, (inputs, labels) in tqdm(enumerate(dataloader, 0)):
-        # print('i =', i,' data =', data)
+        # print(type(i))
         data_time.update(time.time() - end)
         inputs, labels = inputs.to(device), labels.to(device)
         output = net(inputs)    
@@ -56,9 +55,6 @@ def train_batch(epoch, dataloader, net, criterion, optimizer, log_freq=2000):
         
         if i % log_freq == 0:
             progress.display(i)
-    
-
-    
             
     return top1.avg
             

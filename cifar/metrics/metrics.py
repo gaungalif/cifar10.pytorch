@@ -1,11 +1,9 @@
 import os
 import sys
-import torch
 
 curr_dir = os.getcwd()
 sys.path.append(curr_dir)
 
-import torch
 import cifar.metrics.functional as F
 
 class AverageMeter(object):

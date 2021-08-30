@@ -2,6 +2,8 @@ from math import e
 import os
 import sys
 
+
+
 curr_dir = os.getcwd()
 sys.path.append(curr_dir)
 
@@ -35,7 +37,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('-lr','--lrate', type=float, help='learning rate', required=True)
     parser.add_argument('-ep','--epoch',type=int, help='epoch', required=True)
-    parser.add_argument('-lf','--lfreq',type=int, help='log frequency')
+    parser.add_argument('-lf','--lfreq',type=int, help='log frequency', required=True)
     parser.add_argument('-m','--momentum',type=float, help='momentum', default=0.9)
     parser.add_argument('-b','--bsize',type=int, help='batch size', default=32)
     parser.add_argument('-n','--num_worker',type=int, help='num worker', default=8)
@@ -43,6 +45,7 @@ if __name__ == "__main__":
     parser.add_argument('-dr','--decay_rate',type=float, help='decay rate', required=True)
     parser.add_argument('-sch','--scheduler',type=str, help='scheduler', required=True)
     parser.add_argument('--net',type=str, help='net', required=True)
+    # parser.add_argument('--layer',type=str, help='residual net layer')
     parser.add_argument('-tr','--train_resized',type=int, help='train resized', default=64)
     parser.add_argument('-vr','--valid_resized',type=int, help='valid resized', default=64)
     parser.add_argument('-ro','--train_rotate',type=int, help='train rotate', default=30)
@@ -66,6 +69,22 @@ if __name__ == "__main__":
         NET = MobileNet(1000).to(task.device)
     elif NET == 'mb2':
         NET = MobileNetV2().to(task.device)
+    # elif NET == 'res':
+    #     if args.layer == '18':
+    #         NET = resnet18()
+
+    #     elif args.layer == '34':
+    #         NET = resnet34()
+
+    #     elif args.layer == '50':
+    #         NET = resnet50()
+
+    #     elif args.layer == '101':
+    #         NET = resnet101()
+
+    #     else:
+    #         NET = resnet152()    
+
     else:
         print("net kau mana")
     
